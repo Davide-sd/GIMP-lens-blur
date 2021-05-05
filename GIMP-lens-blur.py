@@ -9,6 +9,8 @@
 # sandona [dot] davide [at] gmail [dot] com
 # https://github.com/Davide-sd/GIMP-lens-blur.git
 
+# Many thanks to Niklas Liebig for the alpha channel correction! :)
+
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -165,6 +167,13 @@ def lens_blur(image, radius, n_components, exposure_gamma):
     components = [complex_kernel_1d(radius, scale, component_params['a'], component_params['b']) for component_params in parameters]
     # Normalise all kernels together (the combination of all applied kernels in 2D must sum to 1)
     normalise_kernels(components, parameters)
+
+    # Niklas: pre-multiplication for alpha images
+    if img.shape[0] == 4:
+        for channel in range(img.shape[0]-1):
+            img[channel] *= img[3]
+
+
     # Increase exposure to highlight bright spots
     img = gamma_exposure(img, exposure_gamma)
 
@@ -206,6 +215,12 @@ def lens_blur(image, radius, n_components, exposure_gamma):
 
     # Reverse exposure
     output_image = gamma_exposure_inverse(output_image, exposure_gamma)
+
+    # Niklas inverse pre-multiplication for alpha images
+    if output_image.shape[0] == 4:
+        for channel in range(output_image.shape[0]-1):
+            with np.errstate(divide='ignore', invalid='ignore'):
+                output_image[channel] /= output_image[3]
 
     # Avoid out of range values - generally this only occurs with small negatives
     # due to imperfect complex kernels

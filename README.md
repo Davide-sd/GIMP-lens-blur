@@ -2,6 +2,8 @@ This is a GIMP plugin that add the ability to perform a **Lens Blur** (also know
 
 This code is based on [Mike Pound's implementation](https://github.com/mikepound/convolve) created for [this Computerphile video](https://www.youtube.com/watch?v=vNG3ZAd8wCc). I changed the code to use **OpenCV** for performance gains.
 
+Many thanks to Niklas Liebig for the alpha channel correction! :)
+
 This plugin has been tested on Ubuntu 18.04 and GIMP 2.10.8.
 
 <div align = 'center'>
